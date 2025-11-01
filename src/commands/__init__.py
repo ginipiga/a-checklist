@@ -1,0 +1,1 @@
+# Command pattern implementation for Undo/Redo functionality

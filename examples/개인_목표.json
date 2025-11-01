@@ -1,0 +1,55 @@
+{
+  "root_items": [
+    {
+      "title": "🎯 11월 개인 목표",
+      "content": "",
+      "risk_score": 0,
+      "max_score": 100,
+      "is_expanded": false,
+      "is_deletable": true,
+      "checklist": [
+        {
+          "text": "Python 고급 강의 수강",
+          "is_checked": false,
+          "score": 20,
+          "summary": "Python 고급 강의 수강",
+          "detail": ""
+        },
+        {
+          "text": "기술 블로그 2개 작성",
+          "is_checked": false,
+          "score": 15,
+          "summary": "기술 블로그 2개 작성",
+          "detail": ""
+        },
+        {
+          "text": "오픈소스 프로젝트 기여",
+          "is_checked": false,
+          "score": 25,
+          "summary": "오픈소스 프로젝트 기여",
+          "detail": ""
+        },
+        {
+          "text": "영어 회화 스터디 참여",
+          "is_checked": true,
+          "score": 10,
+          "summary": "영어 회화 스터디 참여",
+          "detail": ""
+        },
+        {
+          "text": "운동 주 3회 이상",
+          "is_checked": false,
+          "score": 10,
+          "summary": "운동 주 3회 이상",
+          "detail": ""
+        }
+      ],
+      "children": [],
+      "source_file": "C:/Users/starg/OneDrive/바탕 화면/risk-management-system/examples/개인_목표.json",
+      "deadline": "2025-11-30"
+    }
+  ],
+  "version": "1.0",
+  "is_single_toggle": true,
+  "original_title": "🎯 11월 개인 목표"
+}

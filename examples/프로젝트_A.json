@@ -1,0 +1,69 @@
+{
+  "root_items": [
+    {
+      "title": "🚀 프로젝트 A - 신규 기능 개발",
+      "content": "",
+      "risk_score": 0,
+      "max_score": 100,
+      "is_expanded": false,
+      "is_deletable": true,
+      "checklist": [
+        {
+          "text": "요구사항 분석 완료",
+          "is_checked": false,
+          "score": 10,
+          "summary": "요구사항 분석 완료",
+          "detail": ""
+        },
+        {
+          "text": "데이터베이스 스키마 설계",
+          "is_checked": false,
+          "score": 8,
+          "summary": "데이터베이스 스키마 설계",
+          "detail": ""
+        },
+        {
+          "text": "API 엔드포인트 개발",
+          "is_checked": false,
+          "score": 20,
+          "summary": "API 엔드포인트 개발",
+          "detail": ""
+        },
+        {
+          "text": "프론트엔드 UI 구현",
+          "is_checked": false,
+          "score": 15,
+          "summary": "프론트엔드 UI 구현",
+          "detail": ""
+        },
+        {
+          "text": "단위 테스트 작성",
+          "is_checked": false,
+          "score": 12,
+          "summary": "단위 테스트 작성",
+          "detail": ""
+        },
+        {
+          "text": "통합 테스트",
+          "is_checked": false,
+          "score": 10,
+          "summary": "통합 테스트",
+          "detail": ""
+        },
+        {
+          "text": "배포 및 모니터링",
+          "is_checked": false,
+          "score": 5,
+          "summary": "배포 및 모니터링",
+          "detail": ""
+        }
+      ],
+      "children": [],
+      "source_file": "C:/Users/starg/OneDrive/바탕 화면/risk-management-system/examples/프로젝트_A.json",
+      "deadline": "2025-11-15"
+    }
+  ],
+  "version": "1.0",
+  "is_single_toggle": true,
+  "original_title": "🚀 프로젝트 A - 신규 기능 개발"
+}

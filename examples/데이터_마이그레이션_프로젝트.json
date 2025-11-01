@@ -1,0 +1,126 @@
+{
+  "root_items": [
+    {
+      "title": "레거시 시스템 데이터 마이그레이션",
+      "content": "기존 온프레미스 데이터베이스를 클라우드 기반 시스템으로 마이그레이션. 약 5TB의 데이터 이전, 다운타임 최소화가 핵심 과제.",
+      "risk_score": 0,
+      "max_score": 100,
+      "is_expanded": false,
+      "is_deletable": true,
+      "checklist": [
+        {
+          "text": "새 체크리스트",
+          "is_checked": false,
+          "score": 1,
+          "summary": "새 체크리스트",
+          "detail": ""
+        },
+        {
+          "text": "새 체크리스트",
+          "is_checked": false,
+          "score": 1,
+          "summary": "새 체크리스트",
+          "detail": ""
+        },
+        {
+          "text": "새 체크리스트",
+          "is_checked": false,
+          "score": 1,
+          "summary": "새 체크리스트",
+          "detail": ""
+        },
+        {
+          "text": "새 체크리스트",
+          "is_checked": false,
+          "score": 1,
+          "summary": "새 체크리스트",
+          "detail": ""
+        }
+      ],
+      "children": [
+        {
+          "title": "사전 준비",
+          "content": "마이그레이션 전 필수 준비 작업",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": false,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "클라우드 인프라 구축",
+              "is_checked": true,
+              "score": 12,
+              "summary": "클라우드 인프라 구축",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-10-24"
+        },
+        {
+          "title": "테스트 마이그레이션",
+          "content": "샘플 데이터로 사전 테스트",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": false,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "샘플 데이터 이전",
+              "is_checked": true,
+              "score": 10,
+              "summary": "샘플 데이터 이전",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-10-26"
+        },
+        {
+          "title": "실제 마이그레이션",
+          "content": "운영 데이터 전체 이전",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": false,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "마이그레이션 실행",
+              "is_checked": true,
+              "score": 20,
+              "summary": "마이그레이션 실행",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-10-28"
+        },
+        {
+          "title": "검증 및 전환",
+          "content": "마이그레이션 후 검증 및 시스템 전환",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": false,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "전체 데이터 검증",
+              "is_checked": true,
+              "score": 15,
+              "summary": "전체 데이터 검증",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-10-30"
+        }
+      ],
+      "source_file": "C:/Users/starg/OneDrive/바탕 화면/risk-management-system/examples/데이터_마이그레이션_프로젝트.json",
+      "date": "2025-10-22",
+      "deadline": "2025-10-30"
+    }
+  ],
+  "version": "1.0",
+  "is_single_toggle": true,
+  "original_title": "레거시 시스템 데이터 마이그레이션"
+}

@@ -1,0 +1,75 @@
+{
+  "root_items": [
+    {
+      "title": "📄 신규 프로젝트 제안서",
+      "content": "",
+      "risk_score": 0,
+      "max_score": 100,
+      "is_expanded": false,
+      "is_deletable": true,
+      "checklist": [
+        {
+          "text": "📄 문서 내용 전체 검토",
+          "is_checked": false,
+          "score": 10,
+          "summary": "📄 문서 내용 전체 검토",
+          "detail": ""
+        },
+        {
+          "text": "🎯 핵심 목표 및 범위 파악",
+          "is_checked": false,
+          "score": 15,
+          "summary": "🎯 핵심 목표 및 범위 파악",
+          "detail": ""
+        },
+        {
+          "text": "📋 실행 항목 목록 작성",
+          "is_checked": false,
+          "score": 12,
+          "summary": "📋 실행 항목 목록 작성",
+          "detail": ""
+        },
+        {
+          "text": "👥 담당자 배정",
+          "is_checked": false,
+          "score": 8,
+          "summary": "👥 담당자 배정",
+          "detail": ""
+        },
+        {
+          "text": "📅 일정 수립",
+          "is_checked": false,
+          "score": 10,
+          "summary": "📅 일정 수립",
+          "detail": ""
+        },
+        {
+          "text": "💰 예산 검토 및 승인",
+          "is_checked": false,
+          "score": 12,
+          "summary": "💰 예산 검토 및 승인",
+          "detail": ""
+        },
+        {
+          "text": "⚠️ 리스크 식별 및 대응책 마련",
+          "is_checked": false,
+          "score": 15,
+          "summary": "⚠️ 리스크 식별 및 대응책 마련",
+          "detail": ""
+        },
+        {
+          "text": "✅ 최종 검토 및 승인",
+          "is_checked": false,
+          "score": 8,
+          "summary": "✅ 최종 검토 및 승인",
+          "detail": ""
+        }
+      ],
+      "children": [],
+      "source_file": "C:/Users/starg/OneDrive/바탕 화면/risk-management-system/examples/테스트_템플릿.json"
+    }
+  ],
+  "version": "1.0",
+  "is_single_toggle": true,
+  "original_title": "📄 신규 프로젝트 제안서"
+}

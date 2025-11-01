@@ -1,0 +1,86 @@
+{
+  "root_items": [
+    {
+      "title": "노원",
+      "content": "회사 홈페이지를 현대적인 디자인으로 전면 리뉴얼하는 프로젝트입니다. 반응형 디자인, 성능 개선, SEO 최적화가 주요 목표입니다.",
+      "risk_score": 0,
+      "max_score": 100,
+      "is_expanded": false,
+      "is_deletable": true,
+      "checklist": [
+        {
+          "text": "프로젝트 킥오프 미팅",
+          "is_checked": true,
+          "score": 5,
+          "summary": "프로젝트 킥오프 미팅",
+          "detail": ""
+        }
+      ],
+      "children": [
+        {
+          "title": "디자인 단계",
+          "content": "UI/UX 디자인 및 목업 작성",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": false,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "와이어프레임 작성",
+              "is_checked": true,
+              "score": 5,
+              "summary": "와이어프레임 작성",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-10-28"
+        },
+        {
+          "title": "개발 단계",
+          "content": "프론트엔드 및 백엔드 개발",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": false,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "개발 환경 세팅",
+              "is_checked": true,
+              "score": 5,
+              "summary": "개발 환경 세팅",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-11-10"
+        },
+        {
+          "title": "테스트 및 배포",
+          "content": "품질 보증 및 운영 서버 배포",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": false,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "기능 테스트",
+              "is_checked": false,
+              "score": 8,
+              "summary": "기능 테스트",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-11-15"
+        }
+      ],
+      "source_file": "C:/Users/starg/OneDrive/바탕 화면/risk-management-system/examples/웹사이트_리뉴얼_프로젝트.json",
+      "date": "2025-10-20",
+      "deadline": "2025-11-15"
+    }
+  ],
+  "version": "1.0",
+  "is_single_toggle": true,
+  "original_title": "노원"
+}

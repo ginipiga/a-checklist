@@ -1,0 +1,51 @@
+{
+  "name": "실용적인 프로젝트 템플릿",
+  "description": "PDF, Word, Excel 파일을 프로젝트 관리 체크리스트로 변환 (심플 스타일)",
+  "structure": {
+    "title": "{{filename}}",
+    "content": "",
+    "checklist": [
+      {
+        "text": "📄 문서 내용 전체 검토",
+        "is_checked": false,
+        "score": 10
+      },
+      {
+        "text": "🎯 핵심 목표 및 범위 파악",
+        "is_checked": false,
+        "score": 15
+      },
+      {
+        "text": "📋 실행 항목 목록 작성",
+        "is_checked": false,
+        "score": 12
+      },
+      {
+        "text": "👥 담당자 배정",
+        "is_checked": false,
+        "score": 8
+      },
+      {
+        "text": "📅 일정 수립",
+        "is_checked": false,
+        "score": 10
+      },
+      {
+        "text": "💰 예산 검토 및 승인",
+        "is_checked": false,
+        "score": 12
+      },
+      {
+        "text": "⚠️ 리스크 식별 및 대응책 마련",
+        "is_checked": false,
+        "score": 15
+      },
+      {
+        "text": "✅ 최종 검토 및 승인",
+        "is_checked": false,
+        "score": 8
+      }
+    ],
+    "children": []
+  }
+}

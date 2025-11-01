@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+output.log
+nul
+
+# Build files
+dist/
+build/
+*.spec
+
+# Test files
+test_*.pdf
+test_*.docx
+test_*.json
+
+# Config (if contains sensitive data)
+# config/
+
+# Claude
+.claude/

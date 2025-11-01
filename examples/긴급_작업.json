@@ -1,0 +1,62 @@
+{
+  "root_items": [
+    {
+      "title": "🔥 긴급 작업 - 서버 장애 대응",
+      "content": "",
+      "risk_score": 0,
+      "max_score": 100,
+      "is_expanded": false,
+      "is_deletable": true,
+      "checklist": [
+        {
+          "text": "장애 원인 파악",
+          "is_checked": true,
+          "score": 15,
+          "summary": "장애 원인 파악",
+          "detail": ""
+        },
+        {
+          "text": "임시 패치 적용",
+          "is_checked": true,
+          "score": 20,
+          "summary": "임시 패치 적용",
+          "detail": ""
+        },
+        {
+          "text": "데이터베이스 백업 확인",
+          "is_checked": true,
+          "score": 10,
+          "summary": "데이터베이스 백업 확인",
+          "detail": ""
+        },
+        {
+          "text": "근본 원인 수정",
+          "is_checked": false,
+          "score": 25,
+          "summary": "근본 원인 수정",
+          "detail": ""
+        },
+        {
+          "text": "모니터링 알림 설정",
+          "is_checked": false,
+          "score": 8,
+          "summary": "모니터링 알림 설정",
+          "detail": ""
+        },
+        {
+          "text": "장애 보고서 작성",
+          "is_checked": false,
+          "score": 7,
+          "summary": "장애 보고서 작성",
+          "detail": ""
+        }
+      ],
+      "children": [],
+      "source_file": "C:/Users/starg/OneDrive/바탕 화면/risk-management-system/examples/긴급_작업.json",
+      "deadline": "2025-10-29"
+    }
+  ],
+  "version": "1.0",
+  "is_single_toggle": true,
+  "original_title": "🔥 긴급 작업 - 서버 장애 대응"
+}

@@ -1,0 +1,105 @@
+{
+  "root_items": [
+    {
+      "title": "쇼핑몰 모바일 앱 개발",
+      "content": "iOS와 Android용 모바일 쇼핑 앱 개발 프로젝트. React Native 사용, 결제 시스템 통합, 푸시 알림 기능 포함.",
+      "risk_score": 0,
+      "max_score": 100,
+      "is_expanded": false,
+      "is_deletable": true,
+      "checklist": [
+        {
+          "text": "기술 스택 결정",
+          "is_checked": true,
+          "score": 5,
+          "summary": "기술 스택 결정",
+          "detail": ""
+        }
+      ],
+      "children": [
+        {
+          "title": "UI/UX 설계",
+          "content": "사용자 인터페이스 및 사용자 경험 설계",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": true,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "사용자 플로우 다이어그램",
+              "is_checked": true,
+              "score": 6,
+              "summary": "사용자 플로우 다이어그램",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-10-25"
+        },
+        {
+          "title": "핵심 기능 개발",
+          "content": "앱의 주요 기능 구현",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": true,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "회원 인증 시스템",
+              "is_checked": true,
+              "score": 10,
+              "summary": "회원 인증 시스템",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-11-15"
+        },
+        {
+          "title": "부가 기능",
+          "content": "사용자 경험 향상을 위한 추가 기능",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": true,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "푸시 알림 설정",
+              "is_checked": false,
+              "score": 7,
+              "summary": "푸시 알림 설정",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-11-25"
+        },
+        {
+          "title": "앱 출시 준비",
+          "content": "스토어 등록 및 마케팅 준비",
+          "risk_score": 0,
+          "max_score": 100,
+          "is_expanded": true,
+          "is_deletable": true,
+          "checklist": [
+            {
+              "text": "베타 테스트",
+              "is_checked": false,
+              "score": 10,
+              "summary": "베타 테스트",
+              "detail": ""
+            }
+          ],
+          "children": [],
+          "deadline": "2025-12-01"
+        }
+      ],
+      "source_file": "C:/Users/starg/OneDrive/바탕 화면/risk-management-system/examples/모바일_앱_개발.json",
+      "date": "2025-10-15",
+      "deadline": "2025-12-01"
+    }
+  ],
+  "version": "1.0",
+  "is_single_toggle": true,
+  "original_title": "쇼핑몰 모바일 앱 개발"
+}
