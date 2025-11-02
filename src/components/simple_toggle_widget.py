@@ -4,7 +4,7 @@
 """
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                              QLineEdit, QLabel, QFrame, QCheckBox, QSpinBox,
-                             QMenu, QAction)
+                             QMenu, QAction, QComboBox)
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFont
 import sys
@@ -195,7 +195,7 @@ class SimpleToggleWidget(QFrame):
         self.child_widgets = []
         self.checklist_widgets = []
         self.is_selected = False
-        self.show_only_unchecked = False  # 미완료 항목만 표시 여부
+        self.filter_mode = "all"  # "all", "completed", "uncompleted"
 
         self.setup_ui()
         self.setup_style()
@@ -295,30 +295,57 @@ class SimpleToggleWidget(QFrame):
         self.progress_label.setMinimumWidth(100)
         layout.addWidget(self.progress_label)
 
-        # 필터 버튼 (미완료 항목만 보기)
-        self.filter_btn = QPushButton("☐")
-        self.filter_btn.setFixedSize(24, 24)
-        self.filter_btn.setToolTip("미완료 항목만 보기")
-        self.filter_btn.setCheckable(True)
-        self.filter_btn.setStyleSheet("""
-            QPushButton {
-                background: transparent;
+        # 필터 콤보박스
+        self.filter_combo = QComboBox()
+        self.filter_combo.addItem("전체", "all")
+        self.filter_combo.addItem("완료", "completed")
+        self.filter_combo.addItem("미완료", "uncompleted")
+        self.filter_combo.setFixedHeight(26)
+        self.filter_combo.setToolTip("체크리스트 필터")
+        self.filter_combo.setStyleSheet("""
+            QComboBox {
+                background: white;
+                border: 1.5px solid #e0e0e0;
+                border-radius: 4px;
+                color: #5a5a5a;
+                font-size: 12px;
+                font-weight: 500;
+                padding: 4px 10px;
+                min-width: 80px;
+            }
+            QComboBox:hover {
+                background-color: #f8f8f8;
+                border-color: #c0c0c0;
+            }
+            QComboBox::drop-down {
                 border: none;
-                color: #9b9a97;
-                font-size: 16px;
+                width: 20px;
             }
-            QPushButton:hover {
-                background-color: rgba(55, 53, 47, 0.08);
-                border-radius: 3px;
+            QComboBox::down-arrow {
+                image: none;
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+                border-top: 5px solid #5a5a5a;
+                margin-right: 5px;
             }
-            QPushButton:checked {
-                background-color: rgba(0, 102, 204, 0.1);
-                color: #0066cc;
-                border-radius: 3px;
+            QComboBox QAbstractItemView {
+                background: white;
+                border: 1.5px solid #e0e0e0;
+                border-radius: 4px;
+                selection-background-color: #e3f2fd;
+                selection-color: #0066cc;
+                padding: 4px;
+            }
+            QComboBox QAbstractItemView::item {
+                padding: 6px 10px;
+                min-height: 24px;
+            }
+            QComboBox QAbstractItemView::item:hover {
+                background-color: #f8f8f8;
             }
         """)
-        self.filter_btn.clicked.connect(self.toggle_filter)
-        layout.addWidget(self.filter_btn)
+        self.filter_combo.currentIndexChanged.connect(self.on_filter_changed)
+        layout.addWidget(self.filter_combo)
 
         # 메뉴 버튼
         menu_btn = QPushButton("⋮")
@@ -367,29 +394,27 @@ class SimpleToggleWidget(QFrame):
     def update_checklist_visibility(self):
         """체크리스트 표시/숨김"""
         self.checklist_container.setVisible(self.item.is_expanded)
+        # 토글이 열릴 때 필터 재적용
+        if self.item.is_expanded and self.filter_mode != "all":
+            self.apply_checklist_filter()
 
-    def toggle_filter(self):
-        """미완료 항목만 보기 토글"""
-        self.show_only_unchecked = self.filter_btn.isChecked()
-
-        # 툴팁 업데이트
-        if self.show_only_unchecked:
-            self.filter_btn.setToolTip("전체 항목 보기")
-        else:
-            self.filter_btn.setToolTip("미완료 항목만 보기")
-
-        # 체크리스트 항목 필터링
+    def on_filter_changed(self, index):
+        """필터 변경 시"""
+        self.filter_mode = self.filter_combo.itemData(index)
         self.apply_checklist_filter()
 
     def apply_checklist_filter(self):
         """체크리스트 필터 적용"""
         for widget in self.checklist_widgets:
-            if self.show_only_unchecked:
-                # 미완료 항목만 표시
-                widget.setVisible(not widget.checklist_item.is_checked)
-            else:
+            if self.filter_mode == "all":
                 # 전체 항목 표시
                 widget.setVisible(True)
+            elif self.filter_mode == "completed":
+                # 완료된 항목만 표시
+                widget.setVisible(widget.checklist_item.is_checked)
+            elif self.filter_mode == "uncompleted":
+                # 미완료 항목만 표시
+                widget.setVisible(not widget.checklist_item.is_checked)
 
     def add_checklist_item(self):
         """체크리스트 항목 추가"""
@@ -429,7 +454,7 @@ class SimpleToggleWidget(QFrame):
         """체크리스트 변경 시"""
         self.update_progress_display()
         # 필터가 활성화되어 있으면 다시 적용
-        if self.show_only_unchecked:
+        if self.filter_mode != "all":
             self.apply_checklist_filter()
         self.item_changed.emit()
 
@@ -482,6 +507,10 @@ class SimpleToggleWidget(QFrame):
             insert_index = self.checklist_layout.count() - 1
             self.checklist_layout.insertWidget(insert_index, widget)
             self.checklist_widgets.append(widget)
+
+        # 필터 재적용
+        if self.filter_mode != "all":
+            self.apply_checklist_filter()
 
         self.update_progress_display()
         self.update_children_visibility()

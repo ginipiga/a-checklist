@@ -119,8 +119,8 @@ class ChecklistPrinter:
         """체크리스트 항목들을 문서에 추가"""
         indent_str = "   " * indent
 
-        for item in checklist_items:
-            # 테이블 생성 (체크박스/내용 | 우선순위 | 점수)
+        for idx, item in enumerate(checklist_items, 1):
+            # 테이블 생성 (번호/체크박스/내용 | 우선순위 | 점수)
             table_format = QTextTableFormat()
             table_format.setBorder(0)
             table_format.setCellPadding(2)
@@ -138,7 +138,7 @@ class ChecklistPrinter:
             # 1행 3열 테이블 생성
             table = cursor.insertTable(1, 3, table_format)
 
-            # 첫 번째 셀: 체크박스와 텍스트 (왼쪽 정렬)
+            # 첫 번째 셀: 번호, 체크박스와 텍스트 (왼쪽 정렬)
             cell = table.cellAt(0, 0)
             cell_cursor = cell.firstCursorPosition()
 
@@ -147,7 +147,7 @@ class ChecklistPrinter:
 
             left_format = QTextCharFormat()
             left_format.setFont(QFont("맑은 고딕", 10))
-            cell_cursor.insertText(f"{indent_str}{checkbox} {text}", left_format)
+            cell_cursor.insertText(f"{indent_str}{idx}. {checkbox} {text}", left_format)
 
             # 두 번째 셀: 우선순위 (가운데 정렬)
             cell = table.cellAt(0, 1)
