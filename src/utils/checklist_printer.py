@@ -255,6 +255,9 @@ class ChecklistPrinter:
         preview.setWindowTitle("프린트 미리보기")
         preview.paintRequested.connect(lambda p: document.print_(p))
 
+        # 전체화면으로 표시
+        preview.showMaximized()
+
         return preview.exec_()
 
     def print_dialog(self, root_items, parent_widget=None):
