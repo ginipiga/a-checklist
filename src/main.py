@@ -889,6 +889,7 @@ class RiskManagementApp(QMainWindow):
 
         try:
             from utils.pdf_processor import PDFProcessor, is_pdf_supported
+            from components.page_range_dialog import PageRangeDialog
 
             if not is_pdf_supported():
                 QMessageBox.critical(self, 'PDF 지원 불가',
@@ -910,10 +911,27 @@ class RiskManagementApp(QMainWindow):
 
         for file_path in file_paths:
             try:
+                # 페이지 수 확인
+                total_pages = processor.get_page_count(file_path)
+                if total_pages == 0:
+                    errors.append(f"{os.path.basename(file_path)}: PDF를 열 수 없습니다")
+                    continue
+
+                # 페이지 범위 선택 다이얼로그 표시
+                page_range = PageRangeDialog.get_page_range_from_user(
+                    os.path.basename(file_path),
+                    total_pages,
+                    self
+                )
+
+                # 사용자가 취소한 경우
+                if page_range is False:
+                    continue
+
                 self.status_bar.showMessage(f'PDF 처리 중: {os.path.basename(file_path)}...')
 
-                # PDF 처리
-                toggle_data = processor.process_pdf(file_path)
+                # PDF 처리 (페이지 범위 전달)
+                toggle_data = processor.process_pdf(file_path, page_range)
 
                 if not toggle_data:
                     errors.append(f"{os.path.basename(file_path)}: PDF에서 텍스트를 추출할 수 없습니다")

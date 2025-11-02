@@ -85,12 +85,13 @@ class PDFProcessor:
             self.evaluator = None
             self.use_weight_evaluation = False
 
-    def extract_text_from_pdf(self, pdf_path: str) -> List[Dict]:
+    def extract_text_from_pdf(self, pdf_path: str, page_range: Optional[Tuple[int, int]] = None) -> List[Dict]:
         """
         PDF에서 텍스트를 추출하고 구조화된 데이터로 반환
 
         Args:
             pdf_path: PDF 파일 경로
+            page_range: (시작 페이지, 종료 페이지) 튜플. None이면 전체 페이지
 
         Returns:
             List[Dict]: 구조화된 텍스트 블록 리스트
@@ -100,7 +101,17 @@ class PDFProcessor:
         try:
             doc = fitz.open(pdf_path)
 
-            for page_num in range(len(doc)):
+            # 페이지 범위 결정
+            if page_range:
+                start_page, end_page = page_range
+                # 1-based를 0-based로 변환
+                start_idx = max(0, start_page - 1)
+                end_idx = min(len(doc), end_page)
+            else:
+                start_idx = 0
+                end_idx = len(doc)
+
+            for page_num in range(start_idx, end_idx):
                 page = doc[page_num]
                 page_dict = page.get_text("dict")
 
@@ -527,12 +538,32 @@ class PDFProcessor:
 
         return scores
 
-    def process_pdf(self, pdf_path: str) -> Dict:
+    def get_page_count(self, pdf_path: str) -> int:
+        """
+        PDF 파일의 전체 페이지 수 반환
+
+        Args:
+            pdf_path: PDF 파일 경로
+
+        Returns:
+            int: 페이지 수
+        """
+        try:
+            doc = fitz.open(pdf_path)
+            page_count = len(doc)
+            doc.close()
+            return page_count
+        except Exception as e:
+            print(f"PDF 페이지 수 확인 오류: {e}")
+            return 0
+
+    def process_pdf(self, pdf_path: str, page_range: Optional[Tuple[int, int]] = None) -> Dict:
         """
         PDF 파일을 처리하여 토글 구조로 변환
 
         Args:
             pdf_path: PDF 파일 경로
+            page_range: (시작 페이지, 종료 페이지) 튜플. None이면 전체 페이지
 
         Returns:
             Dict: 토글 구조 데이터
@@ -541,7 +572,7 @@ class PDFProcessor:
         filename_without_ext = os.path.splitext(filename)[0]
 
         # 1. 텍스트 추출
-        text_blocks = self.extract_text_from_pdf(pdf_path)
+        text_blocks = self.extract_text_from_pdf(pdf_path, page_range)
 
         if not text_blocks:
             return None
