@@ -82,7 +82,7 @@ class PageRangeDialog(QDialog):
         button_layout.addStretch()
 
         ok_button = QPushButton("확인")
-        ok_button.clicked.connect(self.accept)
+        ok_button.clicked.connect(self.on_accept)
         ok_button.setDefault(True)
         button_layout.addWidget(ok_button)
 
@@ -165,7 +165,13 @@ class PageRangeDialog(QDialog):
         if is_checked:
             self.start_page = 1
             self.end_page = self.total_pages
-            self.page_count_label.setText(f"{self.total_pages}페이지 선택됨")
+            # 전체 페이지가 10페이지 초과인 경우 경고 표시
+            if self.total_pages > 10:
+                self.page_count_label.setText(f"<font color='red'>{self.total_pages}페이지 선택됨 (최대 10페이지)</font>")
+                self.page_count_label.setToolTip("⚠️ 처리 시간과 품질을 위해 10페이지 이하로 선택해주세요.")
+            else:
+                self.page_count_label.setText(f"{self.total_pages}페이지 선택됨")
+                self.page_count_label.setToolTip("")
         else:
             self.validate_range()
 
@@ -180,10 +186,45 @@ class PageRangeDialog(QDialog):
             end = start
 
         page_count = end - start + 1
-        self.page_count_label.setText(f"{page_count}페이지 선택됨")
+
+        # 10페이지 제한 체크
+        if page_count > 10:
+            self.page_count_label.setText(f"<font color='red'>{page_count}페이지 선택됨 (최대 10페이지)</font>")
+            self.page_count_label.setToolTip("⚠️ 처리 시간과 품질을 위해 10페이지 이하로 선택해주세요.")
+        else:
+            self.page_count_label.setText(f"{page_count}페이지 선택됨")
+            self.page_count_label.setToolTip("")
 
         self.start_page = start
         self.end_page = end
+
+    def on_accept(self):
+        """확인 버튼 클릭 시 페이지 수 검증"""
+        if not self.use_all_pages:
+            page_count = self.end_page - self.start_page + 1
+            if page_count > 10:
+                reply = QMessageBox.warning(
+                    self,
+                    '페이지 수 제한',
+                    f'선택한 페이지 수({page_count}페이지)가 너무 많습니다.\n\n'
+                    '최대 10페이지까지만 선택할 수 있습니다.\n'
+                    '처리 시간과 품질을 위해 페이지 범위를 줄여주세요.',
+                    QMessageBox.Ok
+                )
+                return  # 다이얼로그를 닫지 않고 유지
+        elif self.use_all_pages and self.total_pages > 10:
+            reply = QMessageBox.warning(
+                self,
+                '페이지 수 제한',
+                f'전체 페이지 수({self.total_pages}페이지)가 너무 많습니다.\n\n'
+                '최대 10페이지까지만 선택할 수 있습니다.\n'
+                '"페이지 범위 선택"을 체크하여 10페이지 이하로 선택해주세요.',
+                QMessageBox.Ok
+            )
+            return  # 다이얼로그를 닫지 않고 유지
+
+        # 페이지 수가 10 이하면 승인
+        self.accept()
 
     def get_page_range(self):
         """선택된 페이지 범위 반환"""
