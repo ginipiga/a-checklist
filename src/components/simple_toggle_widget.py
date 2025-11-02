@@ -138,6 +138,14 @@ class SimpleChecklistItemWidget(QWidget):
                     text-decoration: line-through;
                 }
             """)
+            self.number_label.setStyleSheet("""
+                QLabel {
+                    color: #d3d3d3;
+                    font-size: 13px;
+                    font-weight: 500;
+                    text-decoration: line-through;
+                }
+            """)
         else:
             self.text_edit.setStyleSheet("""
                 QLineEdit {
@@ -145,6 +153,13 @@ class SimpleChecklistItemWidget(QWidget):
                     background: transparent;
                     color: #37352f;
                     font-size: 14px;
+                }
+            """)
+            self.number_label.setStyleSheet("""
+                QLabel {
+                    color: #9b9a97;
+                    font-size: 13px;
+                    font-weight: 500;
                 }
             """)
 
@@ -180,6 +195,7 @@ class SimpleToggleWidget(QFrame):
         self.child_widgets = []
         self.checklist_widgets = []
         self.is_selected = False
+        self.show_only_unchecked = False  # 미완료 항목만 표시 여부
 
         self.setup_ui()
         self.setup_style()
@@ -279,6 +295,31 @@ class SimpleToggleWidget(QFrame):
         self.progress_label.setMinimumWidth(100)
         layout.addWidget(self.progress_label)
 
+        # 필터 버튼 (미완료 항목만 보기)
+        self.filter_btn = QPushButton("☐")
+        self.filter_btn.setFixedSize(24, 24)
+        self.filter_btn.setToolTip("미완료 항목만 보기")
+        self.filter_btn.setCheckable(True)
+        self.filter_btn.setStyleSheet("""
+            QPushButton {
+                background: transparent;
+                border: none;
+                color: #9b9a97;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: rgba(55, 53, 47, 0.08);
+                border-radius: 3px;
+            }
+            QPushButton:checked {
+                background-color: rgba(0, 102, 204, 0.1);
+                color: #0066cc;
+                border-radius: 3px;
+            }
+        """)
+        self.filter_btn.clicked.connect(self.toggle_filter)
+        layout.addWidget(self.filter_btn)
+
         # 메뉴 버튼
         menu_btn = QPushButton("⋮")
         menu_btn.setFixedSize(24, 24)
@@ -327,6 +368,29 @@ class SimpleToggleWidget(QFrame):
         """체크리스트 표시/숨김"""
         self.checklist_container.setVisible(self.item.is_expanded)
 
+    def toggle_filter(self):
+        """미완료 항목만 보기 토글"""
+        self.show_only_unchecked = self.filter_btn.isChecked()
+
+        # 툴팁 업데이트
+        if self.show_only_unchecked:
+            self.filter_btn.setToolTip("전체 항목 보기")
+        else:
+            self.filter_btn.setToolTip("미완료 항목만 보기")
+
+        # 체크리스트 항목 필터링
+        self.apply_checklist_filter()
+
+    def apply_checklist_filter(self):
+        """체크리스트 필터 적용"""
+        for widget in self.checklist_widgets:
+            if self.show_only_unchecked:
+                # 미완료 항목만 표시
+                widget.setVisible(not widget.checklist_item.is_checked)
+            else:
+                # 전체 항목 표시
+                widget.setVisible(True)
+
     def add_checklist_item(self):
         """체크리스트 항목 추가"""
         new_item = ChecklistItem(text="새 체크리스트", is_checked=False, score=1)
@@ -364,6 +428,9 @@ class SimpleToggleWidget(QFrame):
     def on_checklist_changed(self):
         """체크리스트 변경 시"""
         self.update_progress_display()
+        # 필터가 활성화되어 있으면 다시 적용
+        if self.show_only_unchecked:
+            self.apply_checklist_filter()
         self.item_changed.emit()
 
     def on_title_changed(self, text):
