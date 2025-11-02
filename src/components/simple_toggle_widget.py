@@ -20,15 +20,29 @@ class SimpleChecklistItemWidget(QWidget):
     checked_changed = pyqtSignal()
     delete_requested = pyqtSignal(object)
 
-    def __init__(self, checklist_item: ChecklistItem, parent=None):
+    def __init__(self, checklist_item: ChecklistItem, index: int = 0, parent=None):
         super().__init__(parent)
         self.checklist_item = checklist_item
+        self.index = index
         self.setup_ui()
 
     def setup_ui(self):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 2, 0, 2)
         layout.setSpacing(8)
+
+        # 번호 레이블
+        self.number_label = QLabel(f"{self.index + 1}.")
+        self.number_label.setFixedWidth(30)
+        self.number_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.number_label.setStyleSheet("""
+            QLabel {
+                color: #9b9a97;
+                font-size: 13px;
+                font-weight: 500;
+            }
+        """)
+        layout.addWidget(self.number_label)
 
         # 체크박스
         self.checkbox = QCheckBox()
@@ -143,6 +157,11 @@ class SimpleChecklistItemWidget(QWidget):
     def on_score_changed(self, value):
         self.checklist_item.score = value
         self.checked_changed.emit()
+
+    def set_index(self, index: int):
+        """인덱스 업데이트"""
+        self.index = index
+        self.number_label.setText(f"{index + 1}.")
 
 
 class SimpleToggleWidget(QFrame):
@@ -313,7 +332,8 @@ class SimpleToggleWidget(QFrame):
         new_item = ChecklistItem(text="새 체크리스트", is_checked=False, score=1)
         self.item.checklist.append(new_item)
 
-        widget = SimpleChecklistItemWidget(new_item)
+        index = len(self.checklist_widgets)
+        widget = SimpleChecklistItemWidget(new_item, index)
         widget.checked_changed.connect(self.on_checklist_changed)
         widget.delete_requested.connect(self.delete_checklist_item)
 
@@ -331,7 +351,15 @@ class SimpleToggleWidget(QFrame):
             self.item.checklist.remove(widget.checklist_item)
             self.checklist_layout.removeWidget(widget)
             widget.deleteLater()
+
+            # 남은 항목들의 번호 업데이트
+            self.update_checklist_numbers()
             self.on_checklist_changed()
+
+    def update_checklist_numbers(self):
+        """체크리스트 항목 번호 업데이트"""
+        for i, widget in enumerate(self.checklist_widgets):
+            widget.set_index(i)
 
     def on_checklist_changed(self):
         """체크리스트 변경 시"""
@@ -378,8 +406,8 @@ class SimpleToggleWidget(QFrame):
         self.checklist_widgets.clear()
 
         # 체크리스트 다시 로드
-        for checklist_item in self.item.checklist:
-            widget = SimpleChecklistItemWidget(checklist_item)
+        for i, checklist_item in enumerate(self.item.checklist):
+            widget = SimpleChecklistItemWidget(checklist_item, i)
             widget.checked_changed.connect(self.on_checklist_changed)
             widget.delete_requested.connect(self.delete_checklist_item)
 
