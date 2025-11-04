@@ -17,6 +17,7 @@ class PageRangeDialog(QDialog):
         self.start_page = 1
         self.end_page = total_pages
         self.use_all_pages = True
+        self.search_keyword = ""  # 검색어
 
         self.setup_ui()
 
@@ -69,6 +70,26 @@ class PageRangeDialog(QDialog):
         self.range_group.setLayout(range_layout)
         self.range_group.setEnabled(False)  # 초기에는 비활성화
         layout.addWidget(self.range_group)
+
+        # 검색어 필터 그룹
+        layout.addSpacing(10)
+        self.search_group = QGroupBox("검색어 필터 (선택사항)")
+        search_layout = QFormLayout()
+
+        # 검색어 입력
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("예: 기본계획수립")
+        search_layout.addRow("검색어:", self.search_input)
+
+        # 설명 라벨
+        search_help = QLabel("<small>검색어를 입력하면 해당 항목 하위의 체크리스트만 추출합니다.<br>"
+                           "개요 수준을 자동 판단하여 바로 아래 수준까지만 체크리스트로 변환합니다.</small>")
+        search_help.setWordWrap(True)
+        search_help.setStyleSheet("color: #787774;")
+        search_layout.addRow("", search_help)
+
+        self.search_group.setLayout(search_layout)
+        layout.addWidget(self.search_group)
 
         # 도움말
         layout.addSpacing(10)
@@ -223,15 +244,19 @@ class PageRangeDialog(QDialog):
             )
             return  # 다이얼로그를 닫지 않고 유지
 
+        # 검색어 저장
+        self.search_keyword = self.search_input.text().strip()
+
         # 페이지 수가 10 이하면 승인
         self.accept()
 
     def get_page_range(self):
-        """선택된 페이지 범위 반환"""
-        if self.use_all_pages:
-            return None  # None은 전체 페이지를 의미
-        else:
-            return (self.start_page, self.end_page)
+        """선택된 페이지 범위 및 검색어 반환"""
+        page_range = None if self.use_all_pages else (self.start_page, self.end_page)
+        return {
+            'page_range': page_range,
+            'search_keyword': self.search_keyword
+        }
 
     @staticmethod
     def get_page_range_from_user(pdf_path: str, total_pages: int, parent=None):

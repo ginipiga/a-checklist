@@ -918,23 +918,27 @@ class RiskManagementApp(QMainWindow):
                     continue
 
                 # 페이지 범위 선택 다이얼로그 표시
-                page_range = PageRangeDialog.get_page_range_from_user(
+                dialog_result = PageRangeDialog.get_page_range_from_user(
                     os.path.basename(file_path),
                     total_pages,
                     self
                 )
 
                 # 사용자가 취소한 경우
-                if page_range is False:
+                if dialog_result is False:
                     continue
+
+                # 페이지 범위와 검색어 추출
+                page_range = dialog_result['page_range']
+                search_keyword = dialog_result['search_keyword']
 
                 self.status_bar.showMessage(f'PDF 처리 중: {os.path.basename(file_path)}...')
 
-                # PDF 처리 (페이지 범위 전달)
-                toggle_data = processor.process_pdf(file_path, page_range)
+                # PDF 처리 (페이지 범위와 검색어 전달)
+                toggle_data, error_msg = processor.process_pdf(file_path, page_range, search_keyword, self)
 
                 if not toggle_data:
-                    errors.append(f"{os.path.basename(file_path)}: PDF에서 텍스트를 추출할 수 없습니다")
+                    errors.append(f"{os.path.basename(file_path)}: {error_msg}")
                     continue
 
                 # 첫 번째 새 토글 추가 시 구분선 생성

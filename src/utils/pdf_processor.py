@@ -557,16 +557,86 @@ class PDFProcessor:
             print(f"PDF 페이지 수 확인 오류: {e}")
             return 0
 
-    def process_pdf(self, pdf_path: str, page_range: Optional[Tuple[int, int]] = None) -> Dict:
+    def filter_by_keyword(self, structured_items: List[Dict], search_keyword: str, parent_widget=None) -> List[Dict]:
+        """
+        검색어로 항목을 필터링하고 바로 아래 개요 수준까지만 추출
+
+        Args:
+            structured_items: 구조화된 항목 리스트
+            search_keyword: 검색어
+            parent_widget: 부모 위젯 (선택 다이얼로그 표시용)
+
+        Returns:
+            필터링된 항목 리스트
+        """
+        # 검색어를 포함하는 모든 항목 찾기 (띄어쓰기 무시)
+        matched_items = []
+        search_keyword_normalized = search_keyword.lower().replace(' ', '')
+
+        for i, item in enumerate(structured_items):
+            item_text = item['text'].lower()
+            item_text_normalized = item_text.replace(' ', '')
+
+            # 정확한 매칭 또는 띄어쓰기 무시 매칭
+            if search_keyword.lower() in item_text or search_keyword_normalized in item_text_normalized:
+                matched_items.append({
+                    'index': i,
+                    'text': item['text'],
+                    'level': item['level']
+                })
+
+        if not matched_items:
+            return []
+
+        # 매칭된 항목이 여러 개인 경우 사용자에게 선택하도록 함
+        found_index = matched_items[0]['index']  # 기본값: 첫 번째
+
+        if len(matched_items) > 1:
+            from components.keyword_selection_dialog import KeywordSelectionDialog
+
+            dialog = KeywordSelectionDialog(search_keyword, matched_items, parent_widget)
+            if dialog.exec_() == dialog.Accepted:
+                selected_idx = dialog.get_selected_index()
+                if selected_idx is not None:
+                    found_index = selected_idx
+                else:
+                    return []  # 선택 취소
+            else:
+                return []  # 다이얼로그 취소
+
+        # 선택된 항목 기준으로 필터링
+        found_item = structured_items[found_index]
+        parent_level = found_item['level']
+        target_level = parent_level + 1  # 바로 아래 수준
+
+        # 찾은 항목 이후의 항목들 중에서 target_level인 항목만 추출
+        filtered_items = []
+
+        for i in range(found_index + 1, len(structured_items)):
+            item = structured_items[i]
+
+            # 같거나 더 높은 수준의 항목이 나오면 중단 (다른 섹션 시작)
+            if item['level'] <= parent_level:
+                break
+
+            # 바로 아래 수준의 항목만 추가
+            if item['level'] == target_level:
+                filtered_items.append(item)
+
+        return filtered_items
+
+    def process_pdf(self, pdf_path: str, page_range: Optional[Tuple[int, int]] = None, search_keyword: str = "", parent_widget=None) -> tuple:
         """
         PDF 파일을 처리하여 토글 구조로 변환
 
         Args:
             pdf_path: PDF 파일 경로
             page_range: (시작 페이지, 종료 페이지) 튜플. None이면 전체 페이지
+            search_keyword: 검색어. 입력하면 해당 항목 하위만 추출
+            parent_widget: 부모 위젯 (선택 다이얼로그 표시용)
 
         Returns:
-            Dict: 토글 구조 데이터
+            tuple: (토글 구조 데이터 또는 None, 에러 메시지 또는 None)
         """
         filename = os.path.basename(pdf_path)
         filename_without_ext = os.path.splitext(filename)[0]
@@ -575,15 +645,43 @@ class PDFProcessor:
         text_blocks = self.extract_text_from_pdf(pdf_path, page_range)
 
         if not text_blocks:
-            return None
+            return None, "PDF에서 텍스트를 추출할 수 없습니다"
 
         # 2. 지능형 구조 분석 (개선된 알고리즘)
         structured_items = self.detect_structure(text_blocks)
 
-        # 3. 토글 구조로 변환
+        # 3. 검색어 필터링 (검색어가 있는 경우)
+        if search_keyword:
+            filtered_items = self.filter_by_keyword(structured_items, search_keyword, parent_widget)
+            if not filtered_items:
+                return None, f"검색어 '{search_keyword}'를 찾을 수 없거나 선택이 취소되었습니다"
+
+            # 필터링된 항목들을 체크리스트로 직접 변환
+            toggle_data = {
+                "title": f"{filename_without_ext} - {search_keyword}",
+                "content": "",
+                "current_score": 0,
+                "max_score": 0,
+                "children": [],
+                "checklist": []
+            }
+
+            # 각 항목을 체크리스트 항목으로 변환
+            for item in filtered_items:
+                checklist_item = {
+                    "text": self._clean_title(item['text']),
+                    "is_checked": False,
+                    "score": 1
+                }
+                toggle_data["checklist"].append(checklist_item)
+                toggle_data["max_score"] += 1
+
+            return toggle_data, None
+
+        # 4. 토글 구조로 변환 (검색어가 없는 경우)
         toggle_data = self.convert_to_toggle_structure(structured_items)
 
-        return toggle_data
+        return toggle_data, None
 
 
 def is_pdf_supported() -> bool:
