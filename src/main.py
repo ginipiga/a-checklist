@@ -1282,6 +1282,14 @@ class RiskManagementApp(QMainWindow):
 
     def apply_priority_sorting(self, sorted_items):
         """우선순위 정렬을 실제로 적용"""
+        # 선택된 위젯의 아이템 기억
+        selected_item = None
+        if self.selected_widget:
+            selected_item = self.selected_widget.item
+            # 이전 선택 해제
+            self.selected_widget.set_selected(False)
+            self.selected_widget = None
+
         # 기존 위젯들 제거
         for widget in self.root_widgets[:]:
             self.scroll_layout.removeWidget(widget)
@@ -1292,9 +1300,14 @@ class RiskManagementApp(QMainWindow):
 
         for item, _priority_info in sorted_items:
             self.root_items.append(item)
-            # 기존 위젯 찾기 또는 새로 생성
-            widget = self.add_widget_for_item(item, None, include_children=False)
+            # 하위 토글도 함께 생성
+            widget = self.add_widget_for_item(item, None, include_children=True)
             self.root_widgets.append(widget)
+
+            # 이전에 선택했던 아이템이면 다시 선택
+            if selected_item and widget.item == selected_item:
+                widget.set_selected(True)
+                self.selected_widget = widget
 
         self.mark_modified()
         self.update_status()
