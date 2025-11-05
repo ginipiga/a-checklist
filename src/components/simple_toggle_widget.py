@@ -552,7 +552,7 @@ class SimpleToggleWidget(QFrame):
             self.update_children_visibility()
 
     def set_selected(self, selected: bool):
-        """선택 상태 설정"""
+        """선택 상태 설정 (하위 토글도 함께 선택)"""
         self.is_selected = selected
         if selected:
             self.setStyleSheet("""
@@ -562,5 +562,18 @@ class SimpleToggleWidget(QFrame):
                     border-radius: 3px;
                 }
             """)
+            # 하위 토글도 함께 선택 표시
+            for child_widget in self.child_widgets:
+                child_widget.set_selected(True)
         else:
             self.setup_style()
+            # 하위 토글도 함께 선택 해제
+            for child_widget in self.child_widgets:
+                child_widget.set_selected(False)
+
+    def mousePressEvent(self, event):
+        """마우스 클릭 시 선택 상태로 변경"""
+        if event.button() == Qt.LeftButton:
+            self.set_selected(True)
+            self.selection_changed.emit(self)
+        super().mousePressEvent(event)

@@ -33,6 +33,13 @@ class RiskManagementApp(QMainWindow):
         # Command History for Undo/Redo
         self.command_history = CommandHistory()
 
+        # Training Data Collector
+        try:
+            from utils.training_data_collector import TrainingDataCollector
+            self.training_collector = TrainingDataCollector()
+        except ImportError:
+            self.training_collector = None
+
         self.setup_ui()
         self.setup_menu()
         self.setup_auto_save()
@@ -221,7 +228,32 @@ class RiskManagementApp(QMainWindow):
         exit_action.setShortcut('Ctrl+Q')
         exit_action.triggered.connect(self.close)
         file_menu.addAction(exit_action)
-    
+
+        # AI 학습 메뉴
+        if self.training_collector:
+            ai_menu = menubar.addMenu('AI 학습')
+
+            save_training_action = QAction('현재 작업을 학습 데이터로 저장', self)
+            save_training_action.setShortcut('Ctrl+L')
+            save_training_action.triggered.connect(self.save_current_as_training_data)
+            ai_menu.addAction(save_training_action)
+
+            ai_menu.addSeparator()
+
+            stats_action = QAction('학습 데이터 통계 보기', self)
+            stats_action.triggered.connect(self.show_training_statistics)
+            ai_menu.addAction(stats_action)
+
+            ai_menu.addSeparator()
+
+            export_openai_action = QAction('내보내기: OpenAI 파인튜닝 형식', self)
+            export_openai_action.triggered.connect(self.export_openai_format)
+            ai_menu.addAction(export_openai_action)
+
+            export_local_action = QAction('내보내기: 로컬 파인튜닝 형식', self)
+            export_local_action.triggered.connect(self.export_local_format)
+            ai_menu.addAction(export_local_action)
+
     def setup_auto_save(self):
         self.auto_save_timer = QTimer()
         self.auto_save_timer.timeout.connect(self.auto_save)
@@ -329,7 +361,19 @@ class RiskManagementApp(QMainWindow):
     def on_item_changed(self):
         self.mark_modified()
         self.update_status()
-    
+        # 모든 위젯의 진행률 표시를 업데이트 (부모 위젯 포함)
+        self.update_all_widget_displays()
+
+    def update_all_widget_displays(self):
+        """모든 위젯의 진행률 표시를 업데이트 (부모 위젯도 포함)"""
+        def update_widget_recursive(widget):
+            widget.update_progress_display()
+            for child_widget in widget.child_widgets:
+                update_widget_recursive(child_widget)
+
+        for root_widget in self.root_widgets:
+            update_widget_recursive(root_widget)
+
     def on_delete_requested(self, widget: ToggleWidget):
         reply = QMessageBox.question(self, '확인', '정말로 이 토글을 삭제하시겠습니까?',
                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -1332,6 +1376,92 @@ class RiskManagementApp(QMainWindow):
         # 프로그램 종료 시 모든 파일 잠금 해제
         self.unlock_all_files()
         event.accept()
+
+    def save_current_as_training_data(self):
+        """현재 작업을 학습 데이터로 저장"""
+        if not self.training_collector:
+            QMessageBox.warning(self, '기능 없음', '학습 데이터 수집 기능을 사용할 수 없습니다.')
+            return
+
+        if not self.selected_widget:
+            QMessageBox.information(self, '선택 필요', '학습 데이터로 저장할 토글을 선택해주세요.')
+            return
+
+        try:
+            # 선택된 토글을 학습 데이터로 저장
+            toggle_item = self.selected_widget.item
+            # ToggleItem의 source_file 속성을 사용 (PDF 경로)
+            original_pdf_path = getattr(toggle_item, 'source_file', None)
+            self.training_collector.save_toggle_as_training_data(toggle_item, original_pdf_path)
+
+            QMessageBox.information(
+                self,
+                '저장 완료',
+                f'학습 데이터가 저장되었습니다!\n\n'
+                f'파일: {self.training_collector.data_file}'
+            )
+            self.status_bar.showMessage('학습 데이터 저장 완료')
+
+        except Exception as e:
+            QMessageBox.critical(self, '저장 오류', f'학습 데이터 저장 중 오류가 발생했습니다:\n{str(e)}')
+
+    def show_training_statistics(self):
+        """학습 데이터 통계 표시"""
+        if not self.training_collector:
+            return
+
+        stats = self.training_collector.get_statistics()
+
+        stats_text = f"📊 학습 데이터 통계\n\n"
+        stats_text += f"총 수정 횟수: {stats['total_corrections']}개\n\n"
+
+        if stats['files']:
+            stats_text += "파일별 통계:\n"
+            for file_info in stats['files']:
+                stats_text += f"  • {file_info['name']}: {file_info['count']}개\n"
+        else:
+            stats_text += "아직 저장된 학습 데이터가 없습니다.\n"
+
+        if stats['latest']:
+            stats_text += f"\n최근 저장: {stats['latest']['timestamp']}"
+
+        QMessageBox.information(self, '학습 데이터 통계', stats_text)
+
+    def export_openai_format(self):
+        """OpenAI 파인튜닝 형식으로 내보내기"""
+        if not self.training_collector:
+            return
+
+        try:
+            output_file = self.training_collector.export_for_openai_finetuning()
+            if output_file:
+                QMessageBox.information(
+                    self,
+                    '내보내기 완료',
+                    f'OpenAI 파인튜닝 파일이 생성되었습니다!\n\n{output_file}'
+                )
+            else:
+                QMessageBox.warning(self, '내보내기 실패', '저장된 학습 데이터가 없습니다.')
+        except Exception as e:
+            QMessageBox.critical(self, '내보내기 오류', f'파일 생성 중 오류가 발생했습니다:\n{str(e)}')
+
+    def export_local_format(self):
+        """로컬 파인튜닝 형식으로 내보내기"""
+        if not self.training_collector:
+            return
+
+        try:
+            output_file = self.training_collector.export_for_local_finetuning()
+            if output_file:
+                QMessageBox.information(
+                    self,
+                    '내보내기 완료',
+                    f'로컬 파인튜닝 파일이 생성되었습니다!\n\n{output_file}'
+                )
+            else:
+                QMessageBox.warning(self, '내보내기 실패', '저장된 학습 데이터가 없습니다.')
+        except Exception as e:
+            QMessageBox.critical(self, '내보내기 오류', f'파일 생성 중 오류가 발생했습니다:\n{str(e)}')
 
 
 def main():

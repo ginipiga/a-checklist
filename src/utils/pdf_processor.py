@@ -271,12 +271,14 @@ class PDFProcessor:
 
         return "paragraph"
 
-    def convert_to_toggle_structure(self, structured_items: List[Dict]) -> Dict:
+    def convert_to_toggle_structure(self, structured_items: List[Dict], filename: str = None, page_range: Optional[Tuple[int, int]] = None) -> Dict:
         """
         구조화된 항목을 토글 구조로 변환
 
         Args:
             structured_items: 구조화된 항목 리스트
+            filename: PDF 파일명
+            page_range: (시작 페이지, 종료 페이지) 튜플
 
         Returns:
             Dict: 토글 구조 데이터
@@ -285,11 +287,26 @@ class PDFProcessor:
             return None
 
         # 최상위 항목 생성
-        root_title = "PDF 문서"
+        if filename:
+            # 파일명에서 확장자 제거
+            filename_without_ext = os.path.splitext(filename)[0]
+            if page_range:
+                root_title = f"{filename_without_ext}, {page_range[0]}p-{page_range[1]}p"
+            else:
+                root_title = f"{filename_without_ext}"
+        else:
+            root_title = "PDF 문서"
 
-        # 첫 번째 항목이 큰 제목이면 사용
+        # 첫 번째 항목이 큰 제목이면 제목에 추가
         if structured_items and structured_items[0]["level"] == 0:
-            root_title = self._clean_title(structured_items[0]["text"])
+            first_title = self._clean_title(structured_items[0]["text"])
+            # 페이지 정보가 있으면 함께 표시
+            if filename and page_range:
+                root_title = f"{filename_without_ext}, {page_range[0]}p-{page_range[1]}p"
+            elif filename:
+                root_title = f"{filename_without_ext}"
+            else:
+                root_title = first_title
             structured_items = structured_items[1:]  # 첫 항목 제거
 
         root_toggle = {
@@ -679,7 +696,7 @@ class PDFProcessor:
             return toggle_data, None
 
         # 4. 토글 구조로 변환 (검색어가 없는 경우)
-        toggle_data = self.convert_to_toggle_structure(structured_items)
+        toggle_data = self.convert_to_toggle_structure(structured_items, filename, page_range)
 
         return toggle_data, None
 
