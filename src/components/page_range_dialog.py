@@ -52,6 +52,8 @@ class PageRangeDialog(QDialog):
         self.start_spinbox.setMinimum(1)
         self.start_spinbox.setMaximum(self.total_pages)
         self.start_spinbox.setValue(1)
+        self.start_spinbox.setKeyboardTracking(False)  # 입력 중 값 변경 방지
+        self.start_spinbox.setCorrectionMode(QSpinBox.CorrectToNearestValue)  # 자동 보정
         self.start_spinbox.valueChanged.connect(self.validate_range)
         range_layout.addRow("시작 페이지:", self.start_spinbox)
 
@@ -60,6 +62,8 @@ class PageRangeDialog(QDialog):
         self.end_spinbox.setMinimum(1)
         self.end_spinbox.setMaximum(self.total_pages)
         self.end_spinbox.setValue(self.total_pages)
+        self.end_spinbox.setKeyboardTracking(False)  # 입력 중 값 변경 방지
+        self.end_spinbox.setCorrectionMode(QSpinBox.CorrectToNearestValue)  # 자동 보정
         self.end_spinbox.valueChanged.connect(self.validate_range)
         range_layout.addRow("종료 페이지:", self.end_spinbox)
 
